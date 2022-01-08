@@ -1,41 +1,70 @@
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
 import Loader from '../Loader/Loader';
 
 const modalRoot = document.querySelector('#modal-root');
 
-class Modal extends React.Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
+// class Modal extends React.Component {
+//   componentDidMount() {
+//     window.addEventListener('keydown', this.handleKeyDown);
+//   }
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
+//   componentWillUnmount() {
+//     window.removeEventListener('keydown', this.handleKeyDown);
+//   }
 
-  handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      this.props.toggleModal();
-    }
-    if (e.target === e.currentTarget) {
-      this.props.toggleModal();
+//   handleKeyDown = e => {
+//     if (e.code === 'Escape') {
+//       this.props.toggleModal();
+//     }
+//     if (e.target === e.currentTarget) {
+//       this.props.toggleModal();
+//     }
+//   };
+
+//   render() {
+//     const data = this.props.img;
+//     return createPortal(
+//       <div className={styles.Overlay} onClick={this.handleKeyDown}>
+//         <Loader />
+//         <div className={styles.Modal}>
+//           <img src={data.src} alt={data.id} />
+//         </div>
+//       </div>,
+//       modalRoot,
+//     );
+//   }
+// }
+
+// export default Modal;
+export default function Modal ({img, toggleModal}) {
+ useEffect(() => {
+  const handleKeyDown = e => {
+    if(e.code === 'Escape') {
+      toggleModal();
     }
   };
-
-  render() {
-    const data = this.props.img;
-    return createPortal(
-      <div className={styles.Overlay} onClick={this.handleKeyDown}>
-        <Loader />
-        <div className={styles.Modal}>
-          <img src={data.src} alt={data.id} />
-        </div>
-      </div>,
-      modalRoot,
-    );
+  window.addEventListener('keydown', handleKeyDown);
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown);
   }
-}
+ }, [toggleModal]);
+ 
+ const handleBackdropClick = e => {
+   if (e.target === e.currentTarget){
+    toggleModal();
+   }
+ }
 
-export default Modal;
+ return createPortal(
+  <div className={styles.Overlay} onClick={handleBackdropClick}>
+    <Loader />
+    <div className={styles.Modal}>
+      <img className={styles['modal-img']} src={img.src} alt={img.id} />
+    </div>
+  </div>,
+  modalRoot,
+);
+}
