@@ -4,7 +4,7 @@ import LoaderElement from 'react-loader-spinner';
 import styles from './Loader.module.css';
 
 export default class Loader extends React.Component {
-  //other logic
+  
   render() {
     return (
       <LoaderElement
